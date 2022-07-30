@@ -22,7 +22,6 @@ public class Proprietario extends Usuario {
 	}
 	
 	
-
 	public void menu() {
 		//arq.lerLanchonetesArq(lanchonetes);
 		Scanner s = new Scanner (System.in);
