@@ -7,8 +7,8 @@ import java.util.Scanner;
 public class Cliente extends Usuario {
 
 	
-	public Cliente() {
-		super();
+	public Cliente(Sistema sistema) {
+		super(sistema);
 		this.ident = 3;
 	}
 

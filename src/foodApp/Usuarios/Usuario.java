@@ -15,10 +15,17 @@ public abstract class Usuario {
 	String senha;
 	int ident; // 1 - Administrador , 2 - Proprietario , 3 - Cliente
 	
+	Sistema sistema = null;
 	Arquivos arq = new Arquivos();
 	Scanner s = new Scanner(System.in);
+	
+	
+	@Override
+	public String toString() {
+		return "Usuario [nome=" + nome + ", email=" + email + ", senha=" + senha + ", ident=" + ident + "]";
+	}
 
-	public Usuario() {
+	public Usuario(Sistema sistema) {
 		System.out.print("Nome:");
 		String nome = s.nextLine();
 		System.out.print("Email:");
@@ -28,7 +35,8 @@ public abstract class Usuario {
 		
 		this.nome = nome;
 		this.email = email;
-		this.senha = senha;	
+		this.senha = senha;
+		this.sistema = sistema;
 	}
 	
 	public Usuario(ArrayList<String> list) {	
@@ -85,7 +93,5 @@ public abstract class Usuario {
 			else System.out.println("aqui");
 		}	
 	}	
-
-	
 	
 }

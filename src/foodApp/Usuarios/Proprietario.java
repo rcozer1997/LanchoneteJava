@@ -10,11 +10,9 @@ import foodApp.Lanchonetes.Lanchonete;
 public class Proprietario extends Usuario {
 	ArrayList<Lanchonete> lanchonetes = new ArrayList <>();
 	Arquivos arq = new Arquivos();
-	Sistema sistema = new Sistema();
 	Scanner s = new Scanner(System.in);
-	
-	public Proprietario() {
-		super();
+	public Proprietario(Sistema sistema) {
+		super(sistema);
 		this.ident = 2;
 	}
 
@@ -22,6 +20,8 @@ public class Proprietario extends Usuario {
 		super(list);
 		
 	}
+	
+	
 
 	public void menu() {
 		//arq.lerLanchonetesArq(lanchonetes);
@@ -37,7 +37,7 @@ public class Proprietario extends Usuario {
 		System.out.println("5) Visualizar um pedido de uma lanchonete");
 		System.out.println("6) Remover pedido");
 		System.out.println("7) Remover cadastro");
-
+		
 		int opcao = s.nextInt();
 		switch(opcao) {
 		case 1:
@@ -53,7 +53,7 @@ public class Proprietario extends Usuario {
 			cadastraLancheLanchonete();
 			break;
 		case 7:
-			this.removerCadastro(this.email, sistema.getListaUsuarios());
+			this.removerCadastro(this.email, this.sistema.getListaUsuarios());
 			break;
 		default:
 			break;

@@ -9,6 +9,7 @@ import foodApp.Usuarios.Usuario;
 
 public class Acesso {
 	Arquivos arq = new Arquivos();
+	Scanner s = new Scanner(System.in);
 	
 	public boolean verificaCadastro(Usuario u, ArrayList<Usuario> listaUsuarios) {
 		for(int i = 0; i<listaUsuarios.size();i++){
@@ -23,9 +24,8 @@ public class Acesso {
 		return true;
 	}
 
-	public void login(ArrayList<Usuario>listaUsuarios){
-		
-		Scanner s = new Scanner(System.in);
+	public void login(ArrayList<Usuario>listaUsuarios){	
+		System.out.println(listaUsuarios.toString());
 		System.out.print("Email:");
 		String email = s.nextLine();
 		System.out.print("Senha:");
@@ -45,6 +45,8 @@ public class Acesso {
 		}
 		
 	}
+	
+
 	
 	public void validaSenha(Usuario u, String senha){
 		if(u.getSenha().equals(senha)){

@@ -18,7 +18,6 @@ public class Sistema {
 	public void menuPrincipal() {
 		arq.lerUsuariosArq(listaUsuarios);
 		//arq.lerLanchonetesArq(p.getLanchonetes());
-		System.out.println(listaUsuarios.isEmpty());
 		int opcao;
 		do {
 			menus.menuPrincipal();
@@ -33,20 +32,20 @@ public class Sistema {
 			
 			switch(opcaoCadastro) {
 			case 1:
-				Administrador a = new Administrador();
+				Administrador a = new Administrador(this);
 				if(!acesso.verificaCadastro(a, listaUsuarios)) break;
 				listaUsuarios.add(a);
 				arq.salvaUsuariosArq(listaUsuarios, "Usuarios.csv");
 				break;
 			case 2:
-				Proprietario p = new Proprietario();
+				Proprietario p = new Proprietario(this);
 				if(!acesso.verificaCadastro(p, listaUsuarios)) break;
 				listaUsuarios.add(p);
 				arq.salvaUsuariosArq(listaUsuarios, "Usuarios.csv");
 				listaUsuarios.isEmpty();
 				break;
 			case 3:
-				Cliente c = new Cliente();
+				Cliente c = new Cliente(this);
 				if(!acesso.verificaCadastro(c, listaUsuarios)) break;
 				listaUsuarios.add(c);
 				arq.salvaUsuariosArq(listaUsuarios, "Usuarios.csv");
@@ -57,33 +56,15 @@ public class Sistema {
 		else if(opcao == 2) {
 			acesso.login(listaUsuarios);
 		}
+		else if(opcao == 3) {
+			removerCadastro(listaUsuarios);
+		}
 		else
 			System.out.println("Opcao invalida!!!");
 	
 	}while (opcao!= 0);
 }	
-	public void removerCadastro(String email, ArrayList<Usuario>listaUsuarios) {
-		System.out.println(listaUsuarios.toString());
-		for(int i = 0; i<listaUsuarios.size();i++){
-			Usuario u = listaUsuarios.get(i);
-			if(u.getEmail().equals(email)){
-				System.out.println("Tem certeza que deseja remover o cadastro?");
-				System.out.println("1 - Sim\n2 - Nao");
-				int opcao = s.nextInt();
-				
-				if(opcao == 1) {
-					listaUsuarios.remove(u);
-			        System.out.println("Cliente removido!");
-					arq.salvaUsuariosArq(listaUsuarios, "Usuarios.csv");
-					break;
-				}
-				else if(opcao == 2) {
-					break;
-				}			
-			}
-			else System.out.println("aqui");
-		}	
-	}
+	
 	/*
 	public ArrayList<Lanchonete>getTodasLanchonetes(){
 		return this.todasLanchonetes;
@@ -103,4 +84,28 @@ public class Sistema {
 			
 			}
 		}*/
+	public void removerCadastro(ArrayList<Usuario>listaUsuarios) {
+		System.out.print("Email:");
+		String email = s.nextLine();
+		s.nextLine();
+		System.out.print("Senha:");
+		String senha = s.nextLine();
+		for(int i = 0; i<listaUsuarios.size();i++){
+			Usuario u = listaUsuarios.get(i);
+			if(u.getEmail().equals(email) && u.getSenha().equals(senha)){
+				System.out.println("Tem certeza que deseja remover o cadastro?");
+				System.out.println("1 - Sim\n2 - Nao");
+				int opcao = s.nextInt();
+				if(opcao == 1) {
+					listaUsuarios.remove(u);
+			        System.out.println("Cliente removido!");
+					arq.salvaUsuariosArq(listaUsuarios, "Usuarios.csv");
+					break;
+				}
+				else if(opcao == 2) {
+					break;
+				}						
+			}
+		}	
+	}
 }

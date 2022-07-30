@@ -8,8 +8,8 @@ public class Administrador extends Usuario {
 	
 	Sistema sistema = new Sistema();
 	
-	public Administrador() {
-		super();
+	public Administrador(Sistema sistema) {
+		super(sistema);
 		this.ident = 1;
 	}
 
