@@ -1,0 +1,2 @@
+module Trab2 {
+}
