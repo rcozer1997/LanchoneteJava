@@ -52,7 +52,7 @@ public class Proprietario extends Usuario {
 			cadastraLancheLanchonete();
 			break;
 		case 7:
-			this.removerCadastro(this.email, this.sistema.getListaUsuarios());
+			this.removerCadastro(this.email, sistema.getListaUsuarios());
 			break;
 		default:
 			break;
@@ -73,12 +73,13 @@ public class Proprietario extends Usuario {
 		System.out.println("Categoria de produtos: ");
 		String categoria = s.nextLine();
 		
-		//sistema.verificaExistenciaLanchonete(codigo); //verifica existencia da lanchonete na lista onde tem todas as lanchonetes do sistema
+		sistema.verificaExistenciaLanchonete(codigo);  //verifica existencia da lanchonete na lista onde tem todas as lanchonetes do sistema
+			Lanchonete l = new Lanchonete(codigo,nome,endereco,categoria);			
+			lanchonetes.add(l); //adiciona lanchonete no arraylist do proprietario
+			sistema.getTodasLanchonetes().add(l); //adiciona na lista, em Sistema, de todas as lanchonetes
 		
-		Lanchonete l = new Lanchonete(codigo,nome,endereco,categoria);
 		
-		lanchonetes.add(l); //adiciona lanchonete no arraylist do proprietario
-		//sistema.getTodasLanchonetes().add(l); //adiciona na lista, em Sistema, de todas as lanchonetes
+	
 	}
 
 	public void removeLanchonete() {

@@ -13,9 +13,8 @@ public abstract class Usuario {
 	String nome;
 	String email;
 	String senha;
-	int ident; // 1 - Administrador , 2 - Proprietario , 3 - Cliente
-	
-	Sistema sistema = null;
+	int ident; // 1 - Administrador , 2 - Proprietario , 3 - Cliente	
+	Sistema sistema;
 	Arquivos arq = new Arquivos();
 	Scanner s = new Scanner(System.in);
 	
@@ -90,7 +89,6 @@ public abstract class Usuario {
 					break;
 				}			
 			}
-			else System.out.println("aqui");
 		}	
 	}	
 	
