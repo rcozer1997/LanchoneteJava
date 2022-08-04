@@ -11,8 +11,8 @@ import foodApp.Arquivos;
 
 public abstract class Usuario {
 	String nome;
-	String email;
-	String senha;
+	private String email;
+	private String senha;
 	int ident; // 1 - Administrador , 2 - Proprietario , 3 - Cliente	
 	Sistema sistema;
 	Arquivos arq = new Arquivos();
