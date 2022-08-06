@@ -2,11 +2,12 @@ package foodApp.Lanchonetes;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
-
 import foodApp.Arquivos;
-import foodApp.Usuarios.Proprietario;
+import foodApp.Exceptions.CodigoReplicadoException;
 import foodApp.Usuarios.Sistema;
 
 public class Lanchonete {
@@ -14,8 +15,9 @@ public class Lanchonete {
 	public String nome;
 	public String endereco;
 	public String categoria;
-	public int pontos;
+	public float pontos;
 	String nomeProprietario;
+	private String emailProprietario;
 	ArrayList<Lanche> lanches = new ArrayList<>();
 	ArrayList<Pedidos> listaPedidos = new ArrayList<>();
 	private double precoMedio;
@@ -23,7 +25,7 @@ public class Lanchonete {
 	Sistema sistema = new Sistema();
 	Arquivos arq = new Arquivos();
 	Scanner s = new Scanner(System.in);
-	@Override
+	
 	public String toString() {
 		return "Lanchonete [codigo=" + codigo + ", nome=" + nome + ", endereco=" + endereco + ", categoria=" + categoria
 				+ ", pontos=" + pontos + ", proprietario= " + nomeProprietario + "]";
@@ -35,16 +37,17 @@ public class Lanchonete {
 		this.nome = b.readLine();
 		this.endereco = b.readLine();
 		this.categoria = b.readLine();
-		this.pontos = Integer.parseInt(b.readLine());
+		this.pontos = Float.parseFloat(b.readLine());
 		this.nomeProprietario = b.readLine();
-		this.sistema = sistema;
+		this.emailProprietario = b.readLine()
+;		this.sistema = sistema;
 		}catch(IOException e) 
 		{
 			System.out.println("Erro");
 		}
 	}
 	
-	public Lanchonete(int codigo, String nome, String endereco, String categoria, String nomeProprietario) {
+	public Lanchonete(int codigo, String nome, String endereco, String categoria, String nomeProprietario, String emailProprietario) {
 		super();
 		this.codigo = codigo;
 		this.nome = nome;
@@ -52,21 +55,19 @@ public class Lanchonete {
 		this.categoria = categoria;
 		this.pontos = 0;
 		this.nomeProprietario = nomeProprietario;
+		this.emailProprietario = emailProprietario;
 	}
-	public void gravaLanchonete(BufferedWriter b) throws IOException {
-			
+	public void gravaLanchonete(BufferedWriter b) throws IOException {		
 			b.write(this.codigo + "\n");
 			b.write(this.nome + "\n");
 			b.write(this.endereco + "\n");
 			b.write(this.categoria + "\n");
 			b.write(this.pontos + "\n");
 			b.write(this.nomeProprietario + "\n");
-			
+			b.write(this.emailProprietario + "\n");
 	}
 		
-	public void cadastraLanche(Lanchonete l) {
-		Scanner s = new Scanner(System.in);
-		
+	public void cadastraLanche(Lanchonete l) throws CodigoReplicadoException {		
 		System.out.println("Informe os dados do lanche:");
 		System.out.println("Codigo identificador: ");
 		int codigo = s.nextInt();
@@ -82,8 +83,10 @@ public class Lanchonete {
 			sistema.getTodosLanches().add(lanche);
 			arq.salvaLanchesArq(sistema.getTodosLanches());
 		}
-	
+		else if(!verificaExistenciaLanche(codigo)) {
+			throw new CodigoReplicadoException("Codigo ja cadastrado!");
 		}
+	}
 	
 	public int getCodigo() {
 		return this.codigo;
@@ -93,10 +96,37 @@ public class Lanchonete {
 		return this.nomeProprietario;
 	}
 	
+	public String getProprietarioEmail() {
+		return this.emailProprietario;
+	}
 	public ArrayList<Lanche> getListaLanches(){
 		return this.lanches;
 	}
-
+	
+	public void removeTodosPedidos() {
+		for(Pedidos thisPedido : listaPedidos) {
+			for(int i = 0; i < sistema.getTodosPedidos().size(); i++) {
+				Pedidos p = sistema.getTodosPedidos().get(i);
+				if(p.getCodigo() == thisPedido.getCodigo()) {
+					sistema.getTodosPedidos().remove(p);
+				}
+			}
+		}		
+		listaPedidos.removeAll(listaPedidos);
+	}
+	
+	public void removeTodosLanches() {
+		for(Lanche thisLanches : lanches) {
+			for(int i = 0; i < sistema.getTodosLanches().size(); i++) {
+				Lanche l = sistema.getTodosLanches().get(i);
+				if(l.getCodigo() == thisLanches.getCodigo()) {
+					sistema.getTodosLanches().remove(l);
+				}
+			}
+		}
+		lanches.removeAll(lanches);
+	}
+	
 	public void listarLanches() {
 		System.out.println("------------------DADOS DA LANCHONETE---------------------------");
 		System.out.println();
@@ -120,13 +150,11 @@ public class Lanchonete {
 			
 		}
 	}
-	
-	
+		
 	public boolean verificaExistenciaLanche(int codigo) {
 		for(int i = 0; i<lanches.size();i++){
-			Lanche l = lanches.get(i);
+			Lanche l = sistema.getTodosLanches().get(i);
 			if(l.getCodigo() == codigo){
-				System.out.println("Lanche com este codigo ja esta cadastrado!");
 				return false;
 			}
 		}
@@ -134,19 +162,18 @@ public class Lanchonete {
 	}
 	
 	public void visualizarPedidos() {
-		
+		System.out.println(listaPedidos.toString());
 		System.out.println("---------------------------------------------------------");
 		System.out.printf("%15s%20s%15s%15s%20s", "CODIGO", "NOME CLIENTE", "VALOR TOTAL", "QTD. ITENS", "DATA");
 		System.out.println();
 		System.out.println("---------------------------------------------------------");
 		for(Pedidos p : listaPedidos) {
 			System.out.println("---------------------------------------------------------");
-			System.out.format("%15s%20s%15s%15s%20s",p.codigo, p.nomeCliente, p.valorTotal, p.qntItens, p.data);
+			System.out.format("%15s%20s%15s%10s%40s",p.codigo, p.nomeCliente, p.valorTotal, p.qntItens, p.data);
 			System.out.println();
 			System.out.println("---------------------------------------------------------");
 			}
 		System.out.println("Numero de pedidos: " + this.listaPedidos.size());
-
 	}
 	
 	public void visualizarPedidoEspecifico() {
@@ -166,8 +193,7 @@ public class Lanchonete {
 				System.out.format("%15s%20s%15s%15s%20s",p.codigo, p.nomeCliente, p.data, p.produtos);
 				System.out.println();
 				System.out.println("---------------------------------------------------------");				
-		}
-	
+		}	
 	}
 	
 	public Pedidos buscarPedido(int codigo) {
@@ -190,10 +216,17 @@ public class Lanchonete {
 	}
 	
 	public int comparaPontos(Lanchonete l) {
-		if(this.pontos < l.pontos) return -1;
-		if(this.pontos > l.pontos) return 1;
+		if(this.pontos < l.pontos) return 1;
+		if(this.pontos > l.pontos) return -1;
 		return 0;
 	}
+	
+	public int comparaVendas(Lanchonete l) {
+		if(this.listaPedidos.size() < l.listaPedidos.size()) return -1;
+		if(this.listaPedidos.size() > l.listaPedidos.size()) return 1;
+		return 0;
+	}
+	
 	
 	public void precoMedioLanches() {
 		double soma = 0;
@@ -203,31 +236,97 @@ public class Lanchonete {
 	}
 	
 	public int compareTo(Lanchonete l) {
-		if(this.precoMedio < l.precoMedio) return -1;
-		if(this.precoMedio > l.precoMedio) return 1;
+		if(this.precoMedio < l.precoMedio) return 1;
+		if(this.precoMedio > l.precoMedio) return -1;
 		return 0;
 	}
 	
 	public void fazerPedido(String nomeCliente) {
-		int opcao;
-		listarLanches();
+		int opcao;	
+		int quant;
+		float valor;
+		ArrayList<Lanche> produtosComprados = new ArrayList<>();
+		LocalDateTime dataAtual = LocalDateTime.now();
+		do {
+			listarLanches();
+			quant = 0;
+			valor = 0;
 		System.out.println("Digite o codigo do produto: ");
 		opcao = s.nextInt();
-		double valorTotal = 0;
-		int qntItens = 0;
-		Pedidos p = new Pedidos(codigo, nomeCliente, valorTotal, qntItens, this.getNome());
+		if(opcao == 0) {
+			System.out.println("Obrigado! Volte sempre!");
+			break;
+		}
+		for(Lanche l : lanches) {
+			if(l.getCodigo() == opcao) {
+				System.out.println("Qual a quantidade?");
+				quant = s.nextInt();
+				for(int i = 0; i < quant; i++) {
+					produtosComprados.add(l);
+				}
+				valor = l.getPreco()*quant;
+			}/*
+			else {
+				System.out.println("Codigo invalido!");
+			}*/		
+		}/*
+		System.out.println("Carrinho atual: ");
+		System.out.println("---------------------------------------------------------");
+		System.out.printf("%15s%20s%15s%15s", "CODIGO", "NOME", "QUANT.", "VALOR");
+		System.out.println();
+		System.out.println("---------------------------------------------------------");
+		for(Lanche comprado : produtosComprados) {
+			System.out.println("---------------------------------------------------------");
+			System.out.format("%15s%20s%15s%15s",comprado.getCodigo(), comprado.getNome(), quant, valor);
+			System.out.println();
+			System.out.println("---------------------------------------------------------");
+		}*/
+		System.out.println("Deseja comprar mais ou finalizar? Caso queira finalizar, pressione 0.");
+		}while( opcao != 0);
+		
+		int codigoPedido = geraCodigoPedido();
+		int qntItens = produtosComprados.size();
+		double valorTotal = calculaValorTotalPedido(produtosComprados);
+		
+		Pedidos p = new Pedidos(codigoPedido, produtosComprados, nomeCliente, valorTotal, qntItens, this.getNome(), dataAtual);
 		listaPedidos.add(p);
-		//Pedido p = new Pedido();
-		//listaPedidos.add(p);
+		sistema.getTodosPedidos().add(p);
+		arq.salvaPedidosArq(sistema.getTodosPedidos());
 	}
 	
 	public void removePedido(Pedidos p) {
-	
 		listaPedidos.remove(p);
+		sistema.getTodosPedidos().remove(p);
+		arq.salvaPedidosArq(sistema.getTodosPedidos());
 	}
 
 	public String getNome() {
 		return this.nome;
+	}
+	
+	public void atualizaPontos(float nota) {
+		this.pontos = (pontos + nota)/2;
+	}
+	
+	public int geraCodigoPedido() {
+		int codigoPedido =  new Random().nextInt(10000) + 1;
+			for(Pedidos p : sistema.getTodosPedidos()) {
+				if(p.getCodigo() == codigoPedido) {
+					codigoPedido = new Random().nextInt(10000) + 1;
+				}
+			}
+		if(codigoPedido == 0) {
+			codigoPedido++;
+		}
+		return codigoPedido;
+	}
+	
+	public double calculaValorTotalPedido(ArrayList<Lanche> lanchesComprados) {
+		double valorTotal = 0;
+		for(Lanche l : lanchesComprados) {
+			valorTotal = valorTotal + l.getPreco();
+		}
+		return valorTotal;
 	}
 }
 

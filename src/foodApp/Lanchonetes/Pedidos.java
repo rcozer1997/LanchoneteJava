@@ -1,11 +1,9 @@
 package foodApp.Lanchonetes;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-
-import foodApp.Usuarios.Cliente;
 
 public class Pedidos {
 	int codigo;
@@ -13,21 +11,19 @@ public class Pedidos {
 	double valorTotal;
 	int qntItens;
 	String nomeLanchonete;
-	Date data;
+	LocalDateTime data;
 	Lanchonete lanchonete;
 	ArrayList<Lanche> produtos = new ArrayList<>();
 
-	
-	@Override
 	public String toString() {
 		return "Pedido [codigo=" + codigo + ", cliente=" + nomeCliente + ", valorTotal=" + valorTotal + ", qntItens="
 				+ qntItens + ", data=" + data + "]";
 	}
 	
-
-	public Pedidos(int codigo, String nomeCliente, double valorTotal, int qntItens, String nomeLanchonete) {
+	public Pedidos(int codigo, ArrayList<Lanche> produtos, String nomeCliente, double valorTotal, int qntItens, String nomeLanchonete, LocalDateTime data) {
 		super();
 		this.codigo = codigo;
+		this.produtos = produtos;
 		this.nomeCliente = nomeCliente;
 		this.valorTotal = valorTotal;
 		this.qntItens = qntItens;
@@ -35,27 +31,23 @@ public class Pedidos {
 		this.nomeLanchonete = nomeLanchonete;
 	}
 	
-	public Pedidos(ArrayList<String> list) {
-		
+	public Pedidos(ArrayList<String> list) {		
 		this.codigo = Integer.parseInt(list.get(0));
 		this.nomeCliente = list.get(1);
 		this.valorTotal = Double.parseDouble(list.get(2));
 		this.qntItens = Integer.parseInt(list.get(3));
-		this.data = list.get(4);
+		this.data = LocalDateTime.parse(list.get(4));
 		this.nomeLanchonete = list.get(5);
 	}
-	
-	public void gravaPedido(BufferedWriter b) throws IOException {
-		
+
+	public void gravaPedido(BufferedWriter b) throws IOException {		
 		b.write(this.codigo + "\n");
 		b.write(this.nomeCliente + "\n");
 		b.write(this.valorTotal + "\n");
 		b.write(this.qntItens + "\n");
 		b.write(this.data + "\n");
-		
+		b.write(this.nomeLanchonete + "\n");
 }
-
-
 	public int getCodigo() {
 		return codigo;
 	}
@@ -64,11 +56,8 @@ public class Pedidos {
 		return produtos;
 	}
 	
-	public String getData() {
+	public LocalDateTime getData() {
 		return data;
-	}
-	
-	
-
+	}	
 }
 

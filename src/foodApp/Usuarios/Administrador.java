@@ -1,28 +1,23 @@
 package foodApp.Usuarios;
 
-import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import foodApp.App;
+
 public class Administrador extends Usuario {
-	
-	Sistema sistema = new Sistema();
+	Scanner s = new Scanner (System.in);
 	
 	public Administrador(Sistema sistema) {
 		super(sistema);
 		this.ident = 1;
 	}
 
-
-
 	public Administrador(ArrayList<String> list) {
 		super(list);
-		// TODO Auto-generated constructor stub
 	}
 
-	@Override
 	public void menu() {
-		Scanner s = new Scanner (System.in);
 		int opcao;
 		do {
 		System.out.println("------------------------------------------------");
@@ -37,25 +32,39 @@ public class Administrador extends Usuario {
 		opcao = s.nextInt();
 		switch(opcao) {
 		case 1:
-			
+			relatorioGeral();
 			break;
 		case 4:
 			removerCadastro(this.getEmail(), sistema.getListaUsuarios());
+			App.main(null);
 			break;	
 		case 0:
 			break;
 		default:
-			System.out.println("Opcao invalida! Tente novamente.");
+			if(opcao == 0) {
+				System.out.println("");
+				}
+			else System.out.println("Opcao invalida! Tente novamente.");
 			break;
-		}
+			}
 		}while(opcao != 0);
 	}
 	
 	public void relatorioGeral() {
-		System.out.println("Total de Clientes: " + sistema.getListaUsuarios().size());
+		int totalClientes = retornaTotalClientes();
+		System.out.println("Total de Clientes: " + totalClientes);
 		System.out.println("Total de lanchonetes: " + sistema.getTodasLanchonetes().size());
 		System.out.println("Total de lanches: " + sistema.getTodosLanches().size());
-		System.out.println("Total de pedidos: "+ sistema.getTodosPedidos());
+		System.out.println("Total de pedidos: "+ sistema.getTodosPedidos().size());
 	}
-
+	
+	public int retornaTotalClientes() {
+		int totalClientes = 0;
+			for(Usuario c : sistema.getListaUsuarios()) {
+				if(c.getIdent() == 3) {
+					totalClientes++;
+				}		
+		}
+		return totalClientes;
+	}
 }

@@ -2,6 +2,7 @@ package foodApp;
 
 import java.util.Scanner;
 
+import foodApp.Exceptions.EmailInvalidoException;
 import foodApp.Usuarios.Administrador;
 import foodApp.Usuarios.Cliente;
 import foodApp.Usuarios.Proprietario;
@@ -17,10 +18,8 @@ public class App {
 		
 			arq.lerUsuariosArq(sistema.getListaUsuarios());
 			arq.lerLanchonetesArq(sistema.getTodasLanchonetes(), sistema); 
-			arq.lerPedidosArq(sistema.getTodosPedidos(), sistema.getTodasLanchonetes());						
 			arq.lerLanchesArq(sistema.getTodosLanches(), sistema.getTodasLanchonetes()); //O arquivo dos lanches sera lido e o codigo verificara o nome da lanchonete que ele esta cadastrado, para inseri-lo na lista da lanchonete respectiva
-			
-			System.out.println(sistema.getTodosLanches().size());
+			arq.lerPedidosArq(sistema.getTodosPedidos(), sistema.getTodasLanchonetes());								
 			int opcao;
 			do {
 				menus.menuPrincipal();
@@ -31,27 +30,38 @@ public class App {
 				case 1:
 					System.out.println("Qual perfil deseja cadastrar?");
 					menus.printaPerfisUsuarios();
-
 					int opcaoCadastro = s.nextInt();
 					switch(opcaoCadastro) {
 					case 1:
 						Administrador a = new Administrador(sistema);
-						if(!sistema.verificaCadastro(a, sistema.getListaUsuarios())) break;
-						sistema.getListaUsuarios().add(a);
-						arq.salvaUsuariosArq(sistema.getListaUsuarios(), "Usuarios.csv");
+						try {
+							if(!sistema.verificaCadastro(a, sistema.getListaUsuarios())) break;
+							sistema.getListaUsuarios().add(a);
+							arq.salvaUsuariosArq(sistema.getListaUsuarios(), "Usuarios.csv");
+						}catch(EmailInvalidoException e) {
+							System.out.println(e.getMessage());
+						}				
 						break;
 					case 2:
-						Proprietario p = new Proprietario(sistema);
-						if(!sistema.verificaCadastro(p, sistema.getListaUsuarios())) break;
-						sistema.getListaUsuarios().add(p);
-						arq.salvaUsuariosArq(sistema.getListaUsuarios(), "Usuarios.csv");
-						sistema.getListaUsuarios().isEmpty();
+						try {
+							Proprietario p = new Proprietario(sistema);
+							if(!sistema.verificaCadastro(p, sistema.getListaUsuarios())) break;
+							sistema.getListaUsuarios().add(p);
+							arq.salvaUsuariosArq(sistema.getListaUsuarios(), "Usuarios.csv");
+							sistema.getListaUsuarios().isEmpty();
+						}catch(EmailInvalidoException e) {
+							System.out.println(e.getMessage());
+						}					
 						break;
 					case 3:
-						Cliente c = new Cliente(sistema);
-						if(!sistema.verificaCadastro(c, sistema.getListaUsuarios())) break;
-						sistema.getListaUsuarios().add(c);
-						arq.salvaUsuariosArq(sistema.getListaUsuarios(), "Usuarios.csv");
+						try {
+							Cliente c = new Cliente(sistema);
+							if(!sistema.verificaCadastro(c, sistema.getListaUsuarios())) break;
+							sistema.getListaUsuarios().add(c);
+							arq.salvaUsuariosArq(sistema.getListaUsuarios(), "Usuarios.csv");
+						}catch(EmailInvalidoException e) {
+							System.out.println(e.getMessage());
+						}					
 						break;
 					case 0:
 						break;
@@ -60,7 +70,12 @@ public class App {
 					}
 					break;
 				case 2:
+					try{
 					sistema.login(sistema.getListaUsuarios(), sistema);
+					
+					}catch(EmailInvalidoException e) {
+					System.out.println(e.getMessage());
+					}
 					break;
 				case 0:
 					System.out.println("Volte sempre!");

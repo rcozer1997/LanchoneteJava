@@ -1,8 +1,6 @@
 package foodApp.Usuarios;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -30,8 +28,7 @@ public abstract class Usuario {
 		System.out.print("Email:");
 		String email = s.nextLine();
 		System.out.print("Senha:");
-		String senha = s.nextLine(); 
-		
+		String senha = s.nextLine(); 		
 		this.nome = nome;
 		this.email = email;
 		this.senha = senha;
@@ -42,8 +39,7 @@ public abstract class Usuario {
 		this.nome = list.get(0);
 		this.email = list.get(1);
 		this.senha = list.get(2);
-		this.ident = Integer.parseInt(list.get(3));
-		
+		this.ident = Integer.parseInt(list.get(3));		
 	}
 	
 	public void gravaUsuariosArq(BufferedWriter b) throws IOException {
@@ -68,6 +64,14 @@ public abstract class Usuario {
 	public int getIdent() {
 		return this.ident;
 	}
+	
+	public boolean isProp(){
+		if(this.ident == 2) {
+			return true;
+		}
+		else return false;
+	}
+	
 	public abstract void menu();
 	
 	public void removerCadastro(String email, ArrayList<Usuario>listaUsuarios) {

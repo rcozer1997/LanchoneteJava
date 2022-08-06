@@ -30,8 +30,8 @@ public class Arquivos {
 			b.close();
 		}catch(IOException e) {
 			System.out.println("Erro ao salvar o arquivo!");
-		}
 	}
+}
 	
 	public void lerUsuariosArq(ArrayList<Usuario> listaUsuarios) {
 		try {
@@ -59,12 +59,11 @@ public class Arquivos {
 			}		
 			b.close();
 			f.close();
-			System.out.println(listaUsuarios.size() + " Usuarios carregados!");
-			
+			//System.out.println(listaUsuarios.size() + " Usuarios carregados!");			
 		}catch(IOException e) {
 			System.out.println("Nenhum usuario carregado.");
-		}
 	}
+}
 	
 	public void lerLanchesArq(ArrayList<Lanche> todosLanches, ArrayList<Lanchonete> lanchonetes) {
 		try {
@@ -72,7 +71,6 @@ public class Arquivos {
 			BufferedReader b = new BufferedReader(f);
 			ArrayList<String> temp = new ArrayList<String>();
 			int t = Integer.parseInt(b.readLine());
-			System.out.println(t);
 			for(int i = 0; i<t; i++) {
 				for(int j = 0; j<4; j++) {
 					String dados = b.readLine();
@@ -82,80 +80,24 @@ public class Arquivos {
 					for(Lanchonete l : lanchonetes) {
 						if(nomeLanchonete.equals(l.getNome())) {
 							l.getListaLanches().add(new Lanche(temp));
-						}
+					}
 				}
 					todosLanches.add(new Lanche(temp));
 					temp.clear();
-				}
-			
+			}		
 			f.close();
-			b.close();
-			
+			b.close();			
 		}catch(IOException e) {
 			System.out.println("Nenhum lanche carregado.");
-		}
 	}
-	
-	public void salvaLanchoneteArq(ArrayList<Lanchonete> lanchonetes) {
-		try {
-			FileWriter f = new FileWriter("Lanchonetes.csv");
-			BufferedWriter b = new BufferedWriter(f);
-			
-			b.write(lanchonetes.size() + "\n");
-			for(Lanchonete l : lanchonetes) {
-				
-				l.gravaLanchonete(b);
-			}
-			b.close();
-			
-		}catch(IOException e) {
-			System.out.println("Erro ao salvar o arquivo.");
-		}
-	}
-	
-	public void lerLanchonetesArq(ArrayList<Lanchonete> lanchonetes, Sistema sistema) {
-		try {
-			FileReader f = new FileReader("Lanchonetes.csv");
-			BufferedReader b = new BufferedReader(f);
-			
-			int t = Integer.parseInt(b.readLine());
-			
-			for(int i = 0; i<t; i++) {
-				lanchonetes.add(new Lanchonete(b, sistema));
-			}
-			f.close();
-			b.close();
-			System.out.println(lanchonetes.size() + " Lanchonetes carregadas!");
-			
-		}catch(IOException e) {
-			System.out.println("Nenhuma lanchonete carregada.");
-		}
-	}
-	
-	public void salvaPedidosArq(ArrayList<Pedidos> pedidos) {
-		try {
-			FileWriter f = new FileWriter("Pedidos.csv");
-			BufferedWriter b = new BufferedWriter(f);
-			
-			b.write(pedidos.size() + "\n");
-			for(Pedidos p : pedidos) {
-				
-				p.gravaPedido(b);
-			}
-			b.close();
-			
-		}catch(IOException e) {
-			System.out.println("Erro ao salvar o arquivo.");
-		}
-	}
+}
 	
 	public void lerPedidosArq(ArrayList<Pedidos> pedidos, ArrayList<Lanchonete> lanchonetes) {
 		try {
 			FileReader f = new FileReader("Pedidos.csv");
 			BufferedReader b = new BufferedReader(f);
 			ArrayList<String> temp = new ArrayList<>();
-			int t = Integer.parseInt(b.readLine());
-			
+			int t = Integer.parseInt(b.readLine());			
 			for(int i = 0; i<t; i++) {
 				for(int j = 0; j<6; j++) {
 					String dados = b.readLine();
@@ -165,18 +107,78 @@ public class Arquivos {
 				for(Lanchonete l : lanchonetes) {
 					if(nomeLanchonete.equals(l.getNome())) {
 						l.getListaPedidos().add(new Pedidos(temp));
-					}
+				}
 			}
 				pedidos.add(new Pedidos(temp));
+				temp.clear();
+		}
+			f.close();
+			b.close();
+			//System.out.println(pedidos.size() + " Pedidos carregados!");			
+		}catch(IOException e) {
+			System.out.println("Nenhum pedido carregado.");
+	}
+}	
+	/*
+	public void salvaProdutosCompradosArq(ArrayList<Lanche> comprados) {
+		try {
+			FileWriter f = new FileWriter("ProdutosComprados.csv");
+			BufferedWriter b = new BufferedWriter(f);			
+			b.write(comprados.size() + "\n");
+			for(Lanche l : comprados) {				
+				l.gravaLanche(b);
+			}
+			b.close();			
+		}catch(IOException e) {
+			System.out.println("Erro ao salvar o arquivo.");
+	}		
+}*/
+	
+	public void salvaLanchoneteArq(ArrayList<Lanchonete> lanchonetes) {
+		try {
+			FileWriter f = new FileWriter("Lanchonetes.csv");
+			BufferedWriter b = new BufferedWriter(f);			
+			b.write(lanchonetes.size() + "\n");
+			for(Lanchonete l : lanchonetes) {				
+				l.gravaLanchonete(b);
+			}
+			b.close();			
+		}catch(IOException e) {
+			System.out.println("Erro ao salvar o arquivo.");
+	}
+}
+	
+	public void lerLanchonetesArq(ArrayList<Lanchonete> lanchonetes, Sistema sistema) {
+		try {
+			FileReader f = new FileReader("Lanchonetes.csv");
+			BufferedReader b = new BufferedReader(f);			
+			int t = Integer.parseInt(b.readLine());			
+			for(int i = 0; i<t; i++) {
+				lanchonetes.add(new Lanchonete(b, sistema));
 			}
 			f.close();
 			b.close();
-			System.out.println(pedidos.size() + " Pedidos carregados!");
-			
+			//System.out.println(lanchonetes.size() + " Lanchonetes carregadas!");			
 		}catch(IOException e) {
-			System.out.println("Nenhum pedido carregado.");
-		}
+			System.out.println("Nenhuma lanchonete carregada.");
 	}
+}
+	
+	public void salvaPedidosArq(ArrayList<Pedidos> pedidos) {
+		try {
+			FileWriter f = new FileWriter("Pedidos.csv");
+			BufferedWriter b = new BufferedWriter(f);
+			
+			b.write(pedidos.size() + "\n");
+			for(Pedidos p : pedidos) {			
+				p.gravaPedido(b);
+			}
+			b.close();			
+		}catch(IOException e) {
+			System.out.println("Erro ao salvar o arquivo.");
+	}
+}
+
 	
 	public void salvaLanchesArq(ArrayList<Lanche> lanches) {
 		try {
