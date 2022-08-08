@@ -56,6 +56,10 @@ public class Pedidos {
 		return produtos;
 	}
 	
+	public int getQntItens() {
+		return qntItens;
+	}
+	
 	public LocalDateTime getData() {
 		return data;
 	}	

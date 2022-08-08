@@ -22,14 +22,14 @@ public class Lanche {
 		this.codigo = Integer.parseInt(list.get(0));
 		this.descricao = list.get(1);
 		this.preco = Float.parseFloat(list.get(2));
-		this.nomeLanchonete = list.get(3);		
+		this.nomeLanchonete = list.get(3);
 }
 	
 	public void gravaLanche(BufferedWriter b) throws IOException {	
 		b.write(this.codigo + "\n");
 		b.write(this.descricao + "\n");
 		b.write(this.preco + "\n");
-		b.write(this.nomeLanchonete + "\n");	
+		b.write(this.nomeLanchonete + "\n");
 	}
 
 	public String getNome() {
@@ -51,7 +51,7 @@ public class Lanche {
 	public String getNomeLanchonete() {
 		return nomeLanchonete;
 	}
-
+	
 	public String toString() {
 		return "Lanche [codigo=" + codigo + ", descricao=" + descricao + ", preco=" + preco + "]";
 	}

@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import foodApp.App;
 import foodApp.Arquivos;
+import foodApp.Sistema;
 import foodApp.Exceptions.CodigoNaoEncontradoException;
 import foodApp.Exceptions.CodigoReplicadoException;
 import foodApp.Lanchonetes.Lanchonete;
@@ -25,7 +26,7 @@ public class Proprietario extends Usuario {
 	}
 	
 	public void menu() {
-		lerLanchonetesProp();
+		lerLanchonetesProp(); //Esse metodo le todas as lanchonetes do sistema e insere as lanchonetes do proprietario em sua lista, checando o email do proprietario
 		int opcao;
 		do{
 		System.out.println("------------------------------------------------");
@@ -35,7 +36,7 @@ public class Proprietario extends Usuario {
 		System.out.println("2) Remover Lanchonete");
 		System.out.println("3) Cadastrar Lanche");
 		System.out.println("4) Visualizar lista de pedidos de uma lanchonete");
-		System.out.println("5) Visualizar um pedido de uma lanchonete");
+		System.out.println("5) Visualizar um pedido de uma lanchonete - nao funciona");
 		System.out.println("6) Remover pedido");
 		System.out.println("7) Remover cadastro");
 		System.out.println("0) Sair");
@@ -56,6 +57,7 @@ public class Proprietario extends Usuario {
 			break;
 		case 3:
 			cadastraLancheLanchonete();
+			arq.salvaLanchesArq(sistema.getTodosLanches());
 			break;
 		case 4:
 			try {
@@ -64,17 +66,18 @@ public class Proprietario extends Usuario {
 				System.out.println(e.getMessage());
 			}
 			break;
-		case 5:
-			break;
+		/*case 5:
+			break;*/
 		case 6:
 			try {
 			removePedido();
+			arq.salvaPedidosArq(sistema.getTodosPedidos());
 			}catch(CodigoNaoEncontradoException e) {
 				System.out.println(e.getMessage());
 			}
 			break;
 		case 7:
-			this.removerCadastro(this.getEmail(), sistema.getListaUsuarios());
+			this.removerCadastro(this.getEmail(), sistema.getListaUsuarios()); //Ao remover o cadastro, todas as lanchonetes do proprietario, bem como os pedidos e lanches, sao removidos
 			App.main(null);
 			break;
 		default:
@@ -122,8 +125,13 @@ public class Proprietario extends Usuario {
 			System.out.println("Codigo invalido!");
 		}
 		else if(verificaProprietario(l)) {
+			l.removeTodosLanches();
+			l.removeTodosPedidos();
 			sistema.getTodasLanchonetes().remove(l);
 			}
+		arq.salvaLanchoneteArq(sistema.getTodasLanchonetes());
+		arq.salvaLanchesArq(sistema.getTodosLanches());
+		arq.salvaPedidosArq(sistema.getTodosPedidos());
 	}
 	
 	public void lerLanchonetesProp() {
@@ -151,16 +159,16 @@ public class Proprietario extends Usuario {
 	}
 	
 	public void exibirLanchonetes(ArrayList<Lanchonete> lanchonetes) {	
-		System.out.println("---------------------------------------------------------");
+		System.out.println("-----------------------------------------------------------------------------------------------------");
 		System.out.printf("%15s%20s%15s%15s%15s", "CODIGO", "NOME", "ENDERECO", "CATEGORIA", "PONTOS");
 		System.out.println();
-		System.out.println("---------------------------------------------------------");
+		System.out.println("-----------------------------------------------------------------------------------------------------");
 		for(Lanchonete l : lanchonetes) {
 			if(l.getProprietarioNome().equals(this.nome)) {
-			System.out.println("---------------------------------------------------------");
+				System.out.println("---------------------------------------------------------------------------------------------");
 			System.out.format("%15s%20s%15s%15s%15s",l.codigo, l.nome, l.endereco, l.categoria, l.pontos);
 			System.out.println();
-			System.out.println("---------------------------------------------------------");
+			System.out.println("--------------------------------------------------------------------------------------------------");
 			}
 		}		
 	}
@@ -183,7 +191,9 @@ public class Proprietario extends Usuario {
 					System.out.println(e.getMessage());
 			}
 		}
-	}	
+
+	}
+
 }
 	
 	public Lanchonete buscarLanchonete(int codigo) {
@@ -223,13 +233,13 @@ public class Proprietario extends Usuario {
 			}
 			else {
 				l.removePedido(p);
-				arq.salvaPedidosArq(sistema.getTodosPedidos());
+				//sistema.getTodosPedidos().remove(p);
 			}
 		}
 	}
 	
 	public void listaLanchonetesProprietario() {
-		exibirLanchonetes(lanchonetes);
+		exibirLanchonetes(sistema.getTodasLanchonetes());
 		System.out.print("Codigo da lanchonete: ");
 	}
 	
@@ -246,7 +256,6 @@ public class Proprietario extends Usuario {
 	}
 	
 	public void removerCadastro(String email, ArrayList<Usuario>listaUsuarios) {
-		System.out.println(listaUsuarios.toString());
 		for(int i = 0; i<listaUsuarios.size();i++){
 			Usuario u = listaUsuarios.get(i);
 			if(u.getEmail().equals(email)){

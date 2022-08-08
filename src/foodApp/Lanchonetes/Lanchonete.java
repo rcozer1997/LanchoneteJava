@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 import foodApp.Arquivos;
+import foodApp.Sistema;
 import foodApp.Exceptions.CodigoReplicadoException;
-import foodApp.Usuarios.Sistema;
 
 public class Lanchonete {
 	public int codigo;
@@ -81,11 +81,12 @@ public class Lanchonete {
 			Lanche lanche = new Lanche(codigo,descricao, preco, this.getNome());
 			lanches.add(lanche);
 			sistema.getTodosLanches().add(lanche);
-			arq.salvaLanchesArq(sistema.getTodosLanches());
+
 		}
 		else if(!verificaExistenciaLanche(codigo)) {
 			throw new CodigoReplicadoException("Codigo ja cadastrado!");
 		}
+
 	}
 	
 	public int getCodigo() {
@@ -112,7 +113,7 @@ public class Lanchonete {
 				}
 			}
 		}		
-		listaPedidos.removeAll(listaPedidos);
+		//listaPedidos.removeAll(listaPedidos);
 	}
 	
 	public void removeTodosLanches() {
@@ -124,29 +125,29 @@ public class Lanchonete {
 				}
 			}
 		}
-		lanches.removeAll(lanches);
+		//lanches.removeAll(lanches);
 	}
 	
 	public void listarLanches() {
-		System.out.println("------------------DADOS DA LANCHONETE---------------------------");
+		System.out.println("-------------------------------DADOS DA LANCHONETE-----------------------------------------");
 		System.out.println();
 		System.out.printf("%20s%20s%15s%15s", "NOME", "ENDERECO", "CATEGORIA", "PONTOS");
 		System.out.println();
-		System.out.println("---------------------------------------------------------");
+		System.out.println("-------------------------------------------------------------------------------------------");
 		System.out.format("%20s%20s%15s%15s",this.nome, this.endereco, this.categoria, this.pontos);
 		System.out.println();
 		System.out.println();
 		System.out.println();
 
-		System.out.println("--------------------------LANCHES-----------------------------");
+		System.out.println("-------------------------------------LANCHES------------------------------------------------");
 		System.out.println();
 		System.out.printf("%15s%20s%15s", "CODIGO", "DESCRICAO", "PRECO");
 		System.out.println();
 		for(Lanche l : lanches) {
-			System.out.println("---------------------------------------------------------");
+			System.out.println("----------------------------------------------------------------------------------------");
 			System.out.format("%15s%20s%15s",l.codigo, l.descricao, l.preco);
 			System.out.println();
-			System.out.println("---------------------------------------------------------");
+			System.out.println("----------------------------------------------------------------------------------------");
 			
 		}
 	}
@@ -162,16 +163,15 @@ public class Lanchonete {
 	}
 	
 	public void visualizarPedidos() {
-		System.out.println(listaPedidos.toString());
-		System.out.println("---------------------------------------------------------");
+		System.out.println("-----------------------------------------------------------------------------------------------------");
 		System.out.printf("%15s%20s%15s%15s%20s", "CODIGO", "NOME CLIENTE", "VALOR TOTAL", "QTD. ITENS", "DATA");
 		System.out.println();
-		System.out.println("---------------------------------------------------------");
+		System.out.println("-----------------------------------------------------------------------------------------------------");
 		for(Pedidos p : listaPedidos) {
-			System.out.println("---------------------------------------------------------");
+			System.out.println("-------------------------------------------------------------------------------------------------");
 			System.out.format("%15s%20s%15s%10s%40s",p.codigo, p.nomeCliente, p.valorTotal, p.qntItens, p.data);
 			System.out.println();
-			System.out.println("---------------------------------------------------------");
+			System.out.println("-------------------------------------------------------------------------------------------------");
 			}
 		System.out.println("Numero de pedidos: " + this.listaPedidos.size());
 	}
@@ -185,14 +185,14 @@ public class Lanchonete {
 			System.out.println("Codigo invalido!");
 		}
 		else {	
-			System.out.println("---------------------------------------------------------");
+			System.out.println("-----------------------------------------------------------------------------------------------------");
 			System.out.printf("%15s%20s%15s%15s%20s", "CODIGO", "NOME CLIENTE", "DATA", "PRODUTOS");
 			System.out.println();
-			System.out.println("---------------------------------------------------------");
-				System.out.println("---------------------------------------------------------");
+			System.out.println("-----------------------------------------------------------------------------------------------------");
+			System.out.println("-----------------------------------------------------------------------------------------------------");
 				System.out.format("%15s%20s%15s%15s%20s",p.codigo, p.nomeCliente, p.data, p.produtos);
 				System.out.println();
-				System.out.println("---------------------------------------------------------");				
+				System.out.println("-------------------------------------------------------------------------------------------------");
 		}	
 	}
 	
@@ -251,7 +251,7 @@ public class Lanchonete {
 			listarLanches();
 			quant = 0;
 			valor = 0;
-		System.out.println("Digite o codigo do produto: ");
+		System.out.println("Digite o codigo do produto ou pressione 0 para sair: ");
 		opcao = s.nextInt();
 		if(opcao == 0) {
 			System.out.println("Obrigado! Volte sempre!");
@@ -280,24 +280,26 @@ public class Lanchonete {
 			System.out.format("%15s%20s%15s%15s",comprado.getCodigo(), comprado.getNome(), quant, valor);
 			System.out.println();
 			System.out.println("---------------------------------------------------------");
-		}*/
-		System.out.println("Deseja comprar mais ou finalizar? Caso queira finalizar, pressione 0.");
+		}*/		
 		}while( opcao != 0);
 		
-		int codigoPedido = geraCodigoPedido();
+		int codigoPedido = geraCodigoPedido(); //Optei por gerar randomicamente o codigo do pedido, checando tambem se o numero randomizado ja esta cadastrado. Caso sim, randomiza novamente 
 		int qntItens = produtosComprados.size();
 		double valorTotal = calculaValorTotalPedido(produtosComprados);
-		
 		Pedidos p = new Pedidos(codigoPedido, produtosComprados, nomeCliente, valorTotal, qntItens, this.getNome(), dataAtual);
 		listaPedidos.add(p);
 		sistema.getTodosPedidos().add(p);
-		arq.salvaPedidosArq(sistema.getTodosPedidos());
+		if(p.getQntItens() == 0) {
+			listaPedidos.remove(p);
+			sistema.getTodosPedidos().remove(p);
+		}
+		System.out.println("Deseja comprar mais ou finalizar? Caso queira finalizar, pressione 0.");	
 	}
 	
 	public void removePedido(Pedidos p) {
 		listaPedidos.remove(p);
 		sistema.getTodosPedidos().remove(p);
-		arq.salvaPedidosArq(sistema.getTodosPedidos());
+		//arq.salvaPedidosArq(sistema.getTodosPedidos());
 	}
 
 	public String getNome() {

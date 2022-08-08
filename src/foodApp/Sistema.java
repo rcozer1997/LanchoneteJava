@@ -1,12 +1,16 @@
-package foodApp.Usuarios;
+package foodApp;
 import java.util.ArrayList;
 import java.util.Scanner;
-import foodApp.Arquivos;
+
 import foodApp.Exceptions.EmailInvalidoException;
 import foodApp.Exceptions.SenhaInvalidaException;
 import foodApp.Lanchonetes.Lanche;
 import foodApp.Lanchonetes.Lanchonete;
 import foodApp.Lanchonetes.Pedidos;
+import foodApp.Usuarios.Administrador;
+import foodApp.Usuarios.Cliente;
+import foodApp.Usuarios.Proprietario;
+import foodApp.Usuarios.Usuario;
 
 public class Sistema {
 	Scanner s = new Scanner(System.in);
@@ -22,8 +26,7 @@ public class Sistema {
 			if(usu.getEmail().equals(u.getEmail()))
 			{	
 				throw new EmailInvalidoException("Email ja cadastrado!");			
-			}
-			
+			}			
 		}
 		return true;
 	}
@@ -49,8 +52,7 @@ public class Sistema {
 		}	
 		if(usu == null){
 			throw new EmailInvalidoException("Usuario nao existe!");
-		}
-		
+		}		
 	}
 	
 	public void validaSenha(Usuario u, String senha, Sistema sistema) throws SenhaInvalidaException{
@@ -103,5 +105,5 @@ public class Sistema {
 				}			
 			}
 		return true;
-		}
+	}
 }

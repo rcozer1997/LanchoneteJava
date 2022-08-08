@@ -13,7 +13,6 @@ import foodApp.Lanchonetes.Pedidos;
 import foodApp.Usuarios.Administrador;
 import foodApp.Usuarios.Cliente;
 import foodApp.Usuarios.Proprietario;
-import foodApp.Usuarios.Sistema;
 import foodApp.Usuarios.Usuario;
 
 public class Arquivos {
@@ -59,7 +58,6 @@ public class Arquivos {
 			}		
 			b.close();
 			f.close();
-			//System.out.println(listaUsuarios.size() + " Usuarios carregados!");			
 		}catch(IOException e) {
 			System.out.println("Nenhum usuario carregado.");
 	}
@@ -114,25 +112,10 @@ public class Arquivos {
 		}
 			f.close();
 			b.close();
-			//System.out.println(pedidos.size() + " Pedidos carregados!");			
 		}catch(IOException e) {
 			System.out.println("Nenhum pedido carregado.");
 	}
 }	
-	/*
-	public void salvaProdutosCompradosArq(ArrayList<Lanche> comprados) {
-		try {
-			FileWriter f = new FileWriter("ProdutosComprados.csv");
-			BufferedWriter b = new BufferedWriter(f);			
-			b.write(comprados.size() + "\n");
-			for(Lanche l : comprados) {				
-				l.gravaLanche(b);
-			}
-			b.close();			
-		}catch(IOException e) {
-			System.out.println("Erro ao salvar o arquivo.");
-	}		
-}*/
 	
 	public void salvaLanchoneteArq(ArrayList<Lanchonete> lanchonetes) {
 		try {
@@ -158,7 +141,6 @@ public class Arquivos {
 			}
 			f.close();
 			b.close();
-			//System.out.println(lanchonetes.size() + " Lanchonetes carregadas!");			
 		}catch(IOException e) {
 			System.out.println("Nenhuma lanchonete carregada.");
 	}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import foodApp.App;
+import foodApp.Sistema;
 
 public class Administrador extends Usuario {
 	Scanner s = new Scanner (System.in);
@@ -24,8 +25,8 @@ public class Administrador extends Usuario {
 		System.out.println("              MENU ADMIN                        ");
 		System.out.println("------------------------------------------------");
 		System.out.println("1) Relatorio geral");
-		System.out.println("2) Relatorio de vendas");
-		System.out.println("3) Relatorio de desempenho");
+		System.out.println("2) Relatorio de vendas - nao funciona");
+		System.out.println("3) Relatorio de desempenho - nao funciona");
 		System.out.println("4) Remover cadastro");
 		System.out.println("0) Sair");
 		

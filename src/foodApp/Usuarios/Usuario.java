@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import foodApp.Arquivos;
+import foodApp.Sistema;
 
 public abstract class Usuario {
 	String nome;
 	private String email;
 	private String senha;
 	int ident; // 1 - Administrador , 2 - Proprietario , 3 - Cliente	
-	Sistema sistema;
+	public Sistema sistema;
 	Arquivos arq = new Arquivos();
 	Scanner s = new Scanner(System.in);
 	

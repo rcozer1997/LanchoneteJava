@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 import foodApp.App;
+import foodApp.Sistema;
 import foodApp.Exceptions.CodigoNaoEncontradoException;
 import foodApp.Lanchonetes.ComparaLanchonetePontos;
 import foodApp.Lanchonetes.ComparaLanchonetePrecoMedio;
@@ -70,6 +71,7 @@ public class Cliente extends Usuario {
 			}catch(CodigoNaoEncontradoException e) {
 				System.out.println(e.getMessage());
 			}
+			arq.salvaPedidosArq(sistema.getTodosPedidos());
 			break;
 		case 8:
 			removerCadastro(this.getEmail(), sistema.getListaUsuarios());
@@ -93,15 +95,15 @@ public class Cliente extends Usuario {
 	}
 
 	public void exibirLanchonetes() {	
-		System.out.println("---------------------------------------------------------");
+		System.out.println("-------------------------------------------------------------------------------------------------------");
 		System.out.printf("%15s%20s%15s%15s%15s", "CODIGO", "NOME", "ENDERECO", "CATEGORIA", "PONTOS");
 		System.out.println();
-		System.out.println("---------------------------------------------------------");
+		System.out.println("-------------------------------------------------------------------------------------------------------");
 		for(Lanchonete l : sistema.getTodasLanchonetes()) {
-			System.out.println("---------------------------------------------------------");
+			System.out.println("---------------------------------------------------------------------------------------------------");
 			System.out.format("%15s%20s%15s%15s%15s",l.codigo, l.nome, l.endereco, l.categoria, l.pontos);
 			System.out.println();
-			System.out.println("---------------------------------------------------------");
+			System.out.println("---------------------------------------------------------------------------------------------------");
 		}
 			
 	}
@@ -112,23 +114,9 @@ public class Cliente extends Usuario {
 				return l;
 		return null;
 	}
-		
-	public void listarLanchonetes() {
-		System.out.println("---------------------------------------------------------");
-		System.out.printf("%15s%20s%15s%15s%15s", "CODIGO", "NOME", "ENDERECO", "CATEGORIA", "PONTOS");
-		System.out.println();
-		System.out.println("---------------------------------------------------------");
-		for(Lanchonete l : sistema.getTodasLanchonetes()) {
-			System.out.println("---------------------------------------------------------");
-			System.out.format("%15s%20s%15s%15s%15s",l.codigo, l.nome, l.endereco, l.categoria, l.pontos);
-			System.out.println();
-			System.out.println("---------------------------------------------------------");
-			
-		}
-	}
-	
+
 	public void verLanchesLanchonete() throws CodigoNaoEncontradoException{
-		listarLanchonetes();
+		exibirLanchonetes();
 		System.out.println("Qual lanchonete gostaria de visualizar?");
 		int codigo = s.nextInt();
 		Lanchonete l = buscarLanchonete(codigo);
@@ -143,21 +131,30 @@ public class Cliente extends Usuario {
 	public void listarLanchonetesPontuacao() {
 		ComparaLanchonetePontos c = new ComparaLanchonetePontos();
 		Collections.sort(sistema.getTodasLanchonetes(), c);
-		System.out.println(sistema.getTodasLanchonetes());
+		exibirLanchonetes();
 	}
 	
 	public void listarPontuacaoCategoria() {
 		Scanner s = new Scanner (System.in);
 		System.out.print("Categoria das lanchonetes a serem exibidas:");
 		String categoria = s.nextLine();
-		ArrayList<Lanchonete> lanchonete = new ArrayList<>();
+		ArrayList<Lanchonete> lanchonetes = new ArrayList<>();
 		for(Lanchonete l : sistema.getTodasLanchonetes()) {
 			if(l.categoria.equals(categoria))
-				lanchonete.add(l);
+				lanchonetes.add(l);
 		}
 		ComparaLanchonetePontos c = new ComparaLanchonetePontos();
-		Collections.sort(lanchonete, c);
-		System.out.println(lanchonete);
+		Collections.sort(lanchonetes, c);
+		System.out.println("---------------------------------------------------------");
+		System.out.printf("%15s%20s%15s%15s%15s", "CODIGO", "NOME", "ENDERECO", "CATEGORIA", "PONTOS");
+		System.out.println();
+		System.out.println("---------------------------------------------------------");
+		for(Lanchonete l : lanchonetes) {
+			System.out.println("---------------------------------------------------------");
+			System.out.format("%15s%20s%15s%15s%15s",l.codigo, l.nome, l.endereco, l.categoria, l.pontos);
+			System.out.println();
+			System.out.println("---------------------------------------------------------");
+		}
 	}
 	
 	public void listarLanchonetesPrecoMedio() {
@@ -173,19 +170,20 @@ public class Cliente extends Usuario {
 	}
 	
 	public void buscarLanche() {
+		Scanner s = new Scanner(System.in);
 		System.out.println("Digite o lanche que deseja buscar: ");
 		String lancheBuscado = s.nextLine();
-		System.out.println("---------------------------------------------------------");
+		System.out.println("-----------------------------------------------------------------------------------------------------");
 		System.out.printf("%20s%20s%20s%15s", "NOME", "LANCHONETE", "COD. LANCHONETE", "COD. PRODUTO");
 		System.out.println();
-		System.out.println("---------------------------------------------------------");
+		System.out.println("-----------------------------------------------------------------------------------------------------");
 		for(Lanchonete l : sistema.getTodasLanchonetes()) {		
 			for(Lanche lanche : l.getListaLanches()) {
 				if(lanche.getNome().contains(lancheBuscado)) {
-					System.out.println("---------------------------------------------------------");
+					System.out.println("-----------------------------------------------------------------------------------------------------");
 					System.out.format("%20s%20s%15s%15s",lanche.getNome(), lanche.getNomeLanchonete(), l.getCodigo(), lanche.getCodigo());
 					System.out.println();
-					System.out.println("---------------------------------------------------------");
+					System.out.println("-----------------------------------------------------------------------------------------------------");
 				}
 			}
 		}
