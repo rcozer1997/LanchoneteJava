@@ -3,16 +3,21 @@ package foodApp.Usuarios;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
+
 import foodApp.App;
 import foodApp.Sistema;
+import foodApp.Compara.ComparaLanchonetePontos;
+import foodApp.Compara.ComparaLanchonetePrecoMedio;
+import foodApp.Compara.ComparaLanchoneteVendas;
 import foodApp.Exceptions.CodigoNaoEncontradoException;
-import foodApp.Lanchonetes.ComparaLanchonetePontos;
-import foodApp.Lanchonetes.ComparaLanchonetePrecoMedio;
-import foodApp.Lanchonetes.ComparaLanchoneteVendas;
 import foodApp.Lanchonetes.Lanche;
 import foodApp.Lanchonetes.Lanchonete;
+import foodApp.Lanchonetes.Pedidos;
 
 public class Cliente extends Usuario {
+	//int qntCompras;
+	//double gastoTotal;
+	ArrayList<Pedidos> pedidosCliente = new ArrayList<>();
 	Scanner s = new Scanner (System.in);
 	public Cliente(Sistema sistema) {
 		super(sistema);
@@ -72,6 +77,7 @@ public class Cliente extends Usuario {
 				System.out.println(e.getMessage());
 			}
 			arq.salvaPedidosArq(sistema.getTodosPedidos());
+			arq.salvaLanchesArq(sistema.getTodosLanches());
 			break;
 		case 8:
 			removerCadastro(this.getEmail(), sistema.getListaUsuarios());
@@ -106,6 +112,30 @@ public class Cliente extends Usuario {
 			System.out.println("---------------------------------------------------------------------------------------------------");
 		}
 			
+	}
+	
+	public ArrayList<Pedidos> getClientePedidos(){
+		return this.pedidosCliente;
+	}
+	
+	double setGastoTotal() {
+		double gastoTotal = 0;
+		for(int i = 0; i<pedidosCliente.size(); i++) {
+			gastoTotal += pedidosCliente.get(i).getValorTotal();
+		}
+		return gastoTotal;
+	}
+	
+	public int comparaCompras(Cliente c) {
+		if(this.pedidosCliente.size() < c.pedidosCliente.size()) return 1;
+		if(this.pedidosCliente.size() > c.pedidosCliente.size()) return -1;
+		return 0;
+	}
+	
+	public int comparaGasto(Cliente c) {
+		if(this.setGastoTotal() < c.setGastoTotal()) return 1;
+		if(this.setGastoTotal() > c.setGastoTotal()) return -1;
+		return 0;
 	}
 	
 	public Lanchonete buscarLanchonete(int codigo) {
@@ -198,7 +228,7 @@ public class Cliente extends Usuario {
 			throw new CodigoNaoEncontradoException("Codigo invalido!");
 		}
 		else {
-			l.fazerPedido(this.getNome());
+			l.fazerPedido(this.getNome(), this.getEmail());
 		}
 	}
 	

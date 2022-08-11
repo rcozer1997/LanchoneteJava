@@ -9,6 +9,7 @@ public class Lanche {
 	String descricao;
 	float preco;
 	String nomeLanchonete;
+	int qntVendas = 0;
 	
 	public Lanche(int codigo, String descricao, float preco, String nomeLanchonete) {
 		super();
@@ -23,6 +24,7 @@ public class Lanche {
 		this.descricao = list.get(1);
 		this.preco = Float.parseFloat(list.get(2));
 		this.nomeLanchonete = list.get(3);
+		this.qntVendas = Integer.parseInt(list.get(4));
 }
 	
 	public void gravaLanche(BufferedWriter b) throws IOException {	
@@ -30,6 +32,7 @@ public class Lanche {
 		b.write(this.descricao + "\n");
 		b.write(this.preco + "\n");
 		b.write(this.nomeLanchonete + "\n");
+		b.write(this.qntVendas + "\n");
 	}
 
 	public String getNome() {
@@ -52,13 +55,27 @@ public class Lanche {
 		return nomeLanchonete;
 	}
 	
+	public void atualizaqntVendas(int quant) {
+		this.qntVendas += quant;
+	}
+	
+	public int getQntVendas() {
+		return this.qntVendas;
+	}
+	
 	public String toString() {
 		return "Lanche [codigo=" + codigo + ", descricao=" + descricao + ", preco=" + preco + "]";
 	}
 	
-	public int compareTo(Lanche l) {
-		if(this.preco < l.preco) return -1;
-		if(this.preco > l.preco) return 1;
+	public int comparaPreco(Lanche l) {
+		if(this.preco < l.preco) return 1;
+		if(this.preco > l.preco) return -1;
+		return 0;
+	}
+	
+	public int comparaVendas(Lanche l) {
+		if(this.qntVendas < l.qntVendas) return 1;
+		if(this.qntVendas > l.qntVendas) return -1;
 		return 0;
 	}
 }

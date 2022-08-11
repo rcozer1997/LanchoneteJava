@@ -70,7 +70,7 @@ public class Arquivos {
 			ArrayList<String> temp = new ArrayList<String>();
 			int t = Integer.parseInt(b.readLine());
 			for(int i = 0; i<t; i++) {
-				for(int j = 0; j<4; j++) {
+				for(int j = 0; j<5; j++) {
 					String dados = b.readLine();
 					temp.add(dados);
 				}	
@@ -90,26 +90,38 @@ public class Arquivos {
 	}
 }
 	
-	public void lerPedidosArq(ArrayList<Pedidos> pedidos, ArrayList<Lanchonete> lanchonetes) {
-		try {
+	public void lerPedidosArq(ArrayList<Pedidos> pedidos, ArrayList<Lanchonete> lanchonetes, ArrayList<Usuario> usuarios) {		
+		ArrayList<Cliente> clientes = new ArrayList<>(); //Pega somente os clientes da lista de usuarios, para que eles possam ser repopulados com seus respectivos pedidos
+			for(Usuario u : usuarios) {
+				if(u.getIdent() == 3) {
+					clientes.add((Cliente) u);
+				}
+			}		
+			try {
 			FileReader f = new FileReader("Pedidos.csv");
 			BufferedReader b = new BufferedReader(f);
 			ArrayList<String> temp = new ArrayList<>();
 			int t = Integer.parseInt(b.readLine());			
 			for(int i = 0; i<t; i++) {
-				for(int j = 0; j<6; j++) {
+				for(int j = 0; j<7; j++) {
 					String dados = b.readLine();
 					temp.add(dados);
-				}	
+				}
+				String emailCliente = temp.get(2);
 				String nomeLanchonete = temp.get(5);				
 				for(Lanchonete l : lanchonetes) {
-					if(nomeLanchonete.equals(l.getNome())) {
+					if(nomeLanchonete.equals(l.getNome())) {     //Repopula as lanchones com os seus respectivos pedidos
 						l.getListaPedidos().add(new Pedidos(temp));
+					}
 				}
-			}
+				for(Cliente c : clientes) {
+					if(emailCliente.equals(c.getEmail())) {
+						c.getClientePedidos().add(new Pedidos(temp)); //Repopula os usuarios com seus respectivos pedidos
+					}
+				}				
 				pedidos.add(new Pedidos(temp));
 				temp.clear();
-		}
+			}
 			f.close();
 			b.close();
 		}catch(IOException e) {
@@ -130,6 +142,21 @@ public class Arquivos {
 			System.out.println("Erro ao salvar o arquivo.");
 	}
 }
+
+	/*
+	public void salvaListaProdutosArq(ArrayList<Lanche> lanchesNoPedido, ArrayList<Pedidos> pedido) {
+		try {
+			FileWriter f = new FileWriter("ListaProdutosDePedidos.csv");
+			BufferedWriter b = new BufferedWriter(f);			
+			b.write(lanchesNoPedido.size() + "\n");
+			for(Lanche l : lanchesNoPedido) {				
+				l.gravaLanchesPedido(b);
+			}
+			b.close();			
+		}catch(IOException e) {
+			System.out.println("Erro ao salvar o arquivo.");
+	}
+}*/
 	
 	public void lerLanchonetesArq(ArrayList<Lanchonete> lanchonetes, Sistema sistema) {
 		try {

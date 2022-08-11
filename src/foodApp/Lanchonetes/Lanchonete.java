@@ -230,8 +230,9 @@ public class Lanchonete {
 	
 	public void precoMedioLanches() {
 		double soma = 0;
-		for(int i=0; i<lanches.size(); i++)
+		for(int i=0; i<lanches.size(); i++) {
 			soma += lanches.get(i).getPreco();
+		}
 		this.precoMedio = (soma/lanches.size());
 	}
 	
@@ -241,7 +242,7 @@ public class Lanchonete {
 		return 0;
 	}
 	
-	public void fazerPedido(String nomeCliente) {
+	public void fazerPedido(String nomeCliente, String emailCliente) {
 		int opcao;	
 		int quant;
 		float valor;
@@ -257,19 +258,30 @@ public class Lanchonete {
 			System.out.println("Obrigado! Volte sempre!");
 			break;
 		}
-		for(Lanche l : lanches) {
-			if(l.getCodigo() == opcao) {
-				System.out.println("Qual a quantidade?");
-				quant = s.nextInt();
-				for(int i = 0; i < quant; i++) {
-					produtosComprados.add(l);
+		else if(opcao != 0) {
+			for(Lanche l : lanches) {
+				if(l.getCodigo() == opcao) {
+					System.out.println("Qual a quantidade?");
+					quant = s.nextInt();
+					for(int i = 0; i < quant; i++) {
+						produtosComprados.add(l);
+						
+					}
+					valor = l.getPreco()*quant;
+					for(Lanche lancheSistema : sistema.getTodosLanches()) {
+						if(lancheSistema.getCodigo() == l.getCodigo()) {
+							l.atualizaqntVendas(quant);
+							lancheSistema.atualizaqntVendas(quant);
+					}
 				}
-				valor = l.getPreco()*quant;
-			}/*
+			}		
+		}
+	}		
+			/*
 			else {
 				System.out.println("Codigo invalido!");
 			}*/		
-		}/*
+		/*
 		System.out.println("Carrinho atual: ");
 		System.out.println("---------------------------------------------------------");
 		System.out.printf("%15s%20s%15s%15s", "CODIGO", "NOME", "QUANT.", "VALOR");
@@ -286,14 +298,13 @@ public class Lanchonete {
 		int codigoPedido = geraCodigoPedido(); //Optei por gerar randomicamente o codigo do pedido, checando tambem se o numero randomizado ja esta cadastrado. Caso sim, randomiza novamente 
 		int qntItens = produtosComprados.size();
 		double valorTotal = calculaValorTotalPedido(produtosComprados);
-		Pedidos p = new Pedidos(codigoPedido, produtosComprados, nomeCliente, valorTotal, qntItens, this.getNome(), dataAtual);
+		Pedidos p = new Pedidos(codigoPedido, produtosComprados, nomeCliente, emailCliente, valorTotal, qntItens, this.getNome(), dataAtual);
 		listaPedidos.add(p);
 		sistema.getTodosPedidos().add(p);
-		if(p.getQntItens() == 0) {
-			listaPedidos.remove(p);
+		/*if(p.getQntItens() == 0) {     //Isso foi feito de modo a tratar um problema de que, ao selecionar 0 para sair, o codigo criava pedidos com valores 0. Esse trecho trata e remove tais pedidos
+			listaPedidos.remove(p);  
 			sistema.getTodosPedidos().remove(p);
-		}
-		System.out.println("Deseja comprar mais ou finalizar? Caso queira finalizar, pressione 0.");	
+		}*/
 	}
 	
 	public void removePedido(Pedidos p) {

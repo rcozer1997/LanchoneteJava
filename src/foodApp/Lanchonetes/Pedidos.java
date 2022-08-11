@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Pedidos {
 	int codigo;
 	String nomeCliente;
+	String emailCliente;
 	double valorTotal;
 	int qntItens;
 	String nomeLanchonete;
@@ -20,11 +21,12 @@ public class Pedidos {
 				+ qntItens + ", data=" + data + "]";
 	}
 	
-	public Pedidos(int codigo, ArrayList<Lanche> produtos, String nomeCliente, double valorTotal, int qntItens, String nomeLanchonete, LocalDateTime data) {
+	public Pedidos(int codigo, ArrayList<Lanche> produtos, String nomeCliente, String emailCliente, double valorTotal, int qntItens, String nomeLanchonete, LocalDateTime data) {
 		super();
 		this.codigo = codigo;
 		this.produtos = produtos;
 		this.nomeCliente = nomeCliente;
+		this.emailCliente = emailCliente;
 		this.valorTotal = valorTotal;
 		this.qntItens = qntItens;
 		this.data = data;
@@ -34,15 +36,17 @@ public class Pedidos {
 	public Pedidos(ArrayList<String> list) {		
 		this.codigo = Integer.parseInt(list.get(0));
 		this.nomeCliente = list.get(1);
-		this.valorTotal = Double.parseDouble(list.get(2));
-		this.qntItens = Integer.parseInt(list.get(3));
-		this.data = LocalDateTime.parse(list.get(4));
-		this.nomeLanchonete = list.get(5);
+		this.emailCliente = list.get(2);
+		this.valorTotal = Double.parseDouble(list.get(3));
+		this.qntItens = Integer.parseInt(list.get(4));
+		this.data = LocalDateTime.parse(list.get(5));
+		this.nomeLanchonete = list.get(6);
 	}
 
 	public void gravaPedido(BufferedWriter b) throws IOException {		
 		b.write(this.codigo + "\n");
 		b.write(this.nomeCliente + "\n");
+		b.write(this.emailCliente + "\n");
 		b.write(this.valorTotal + "\n");
 		b.write(this.qntItens + "\n");
 		b.write(this.data + "\n");
@@ -62,6 +66,10 @@ public class Pedidos {
 	
 	public LocalDateTime getData() {
 		return data;
-	}	
+	}
+	
+	public double getValorTotal() {
+		return valorTotal;
+	}
 }
 

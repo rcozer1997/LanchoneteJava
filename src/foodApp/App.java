@@ -18,7 +18,7 @@ public class App {
 			arq.lerUsuariosArq(sistema.getListaUsuarios());
 			arq.lerLanchonetesArq(sistema.getTodasLanchonetes(), sistema); 
 			arq.lerLanchesArq(sistema.getTodosLanches(), sistema.getTodasLanchonetes()); //O arquivo dos lanches sera lido e o codigo verificara o nome da lanchonete que ele esta cadastrado, para inseri-lo na lista da lanchonete respectiva
-			arq.lerPedidosArq(sistema.getTodosPedidos(), sistema.getTodasLanchonetes()); //O mesmo ocorre com os pedidos, que serão inseridos nas lanchonetes respectivas							
+			arq.lerPedidosArq(sistema.getTodosPedidos(), sistema.getTodasLanchonetes(), sistema.getListaUsuarios()); //O mesmo ocorre com os pedidos, que serão inseridos nas lanchonetes respectivas							
 			int opcao;
 			do {
 				menus.menuPrincipal();
