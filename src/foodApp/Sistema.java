@@ -96,7 +96,14 @@ public class Sistema {
 	public ArrayList<Lanche> getTodosLanches(){
 		return this.todosLanches;
 	}
-		
+	/*
+	public void removePedido(int codigoPedido) {
+		for(Pedidos pedido : todosPedidos) {
+			if(pedido.getCodigo() == codigoPedido) {
+				todosPedidos.remove(pedido);
+			}
+		}
+	}*/
 	public boolean verificaExistenciaLanchonete(int codigo) {
 		for(int i = 0; i<this.todasLanchonetes.size();i++){
 			Lanchonete l = this.todasLanchonetes.get(i);

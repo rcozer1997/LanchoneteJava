@@ -74,9 +74,9 @@ public class Arquivos {
 					String dados = b.readLine();
 					temp.add(dados);
 				}	
-					String nomeLanchonete = temp.get(3);				
+					int codigoLanchonete = Integer.parseInt(temp.get(3));				
 					for(Lanchonete l : lanchonetes) {
-						if(nomeLanchonete.equals(l.getNome())) {
+						if(codigoLanchonete == l.getCodigo()) {
 							l.getListaLanches().add(new Lanche(temp));
 					}
 				}
@@ -90,36 +90,36 @@ public class Arquivos {
 	}
 }
 	
-	public void lerPedidosArq(ArrayList<Pedidos> pedidos, ArrayList<Lanchonete> lanchonetes, ArrayList<Usuario> usuarios) {		
+	public void lerPedidosArq(ArrayList<Pedidos> pedidos, ArrayList<Lanchonete> lanchonetes, ArrayList<Usuario> usuarios, Sistema sistema) {		
 		ArrayList<Cliente> clientes = new ArrayList<>(); //Pega somente os clientes da lista de usuarios, para que eles possam ser repopulados com seus respectivos pedidos
 			for(Usuario u : usuarios) {
 				if(u.getIdent() == 3) {
 					clientes.add((Cliente) u);
 				}
-			}		
+			}
 			try {
 			FileReader f = new FileReader("Pedidos.csv");
 			BufferedReader b = new BufferedReader(f);
 			ArrayList<String> temp = new ArrayList<>();
 			int t = Integer.parseInt(b.readLine());			
 			for(int i = 0; i<t; i++) {
-				for(int j = 0; j<7; j++) {
+				for(int j = 0; j<8; j++) {
 					String dados = b.readLine();
 					temp.add(dados);
 				}
 				String emailCliente = temp.get(2);
-				String nomeLanchonete = temp.get(5);				
+				int codigoLanchonete = Integer.parseInt(temp.get(6));
 				for(Lanchonete l : lanchonetes) {
-					if(nomeLanchonete.equals(l.getNome())) {     //Repopula as lanchones com os seus respectivos pedidos
-						l.getListaPedidos().add(new Pedidos(temp));
+					if(codigoLanchonete == l.getCodigo()) {     //Repopula as lanchonetes com os seus respectivos pedidos
+						l.getListaPedidos().add(new Pedidos(temp, sistema));
 					}
 				}
 				for(Cliente c : clientes) {
 					if(emailCliente.equals(c.getEmail())) {
-						c.getClientePedidos().add(new Pedidos(temp)); //Repopula os usuarios com seus respectivos pedidos
+						c.getClientePedidos().add(new Pedidos(temp, sistema)); //Repopula os usuarios com seus respectivos pedidos
 					}
-				}				
-				pedidos.add(new Pedidos(temp));
+				}	
+				pedidos.add(new Pedidos(temp, sistema));
 				temp.clear();
 			}
 			f.close();
@@ -143,21 +143,6 @@ public class Arquivos {
 	}
 }
 
-	/*
-	public void salvaListaProdutosArq(ArrayList<Lanche> lanchesNoPedido, ArrayList<Pedidos> pedido) {
-		try {
-			FileWriter f = new FileWriter("ListaProdutosDePedidos.csv");
-			BufferedWriter b = new BufferedWriter(f);			
-			b.write(lanchesNoPedido.size() + "\n");
-			for(Lanche l : lanchesNoPedido) {				
-				l.gravaLanchesPedido(b);
-			}
-			b.close();			
-		}catch(IOException e) {
-			System.out.println("Erro ao salvar o arquivo.");
-	}
-}*/
-	
 	public void lerLanchonetesArq(ArrayList<Lanchonete> lanchonetes, Sistema sistema) {
 		try {
 			FileReader f = new FileReader("Lanchonetes.csv");
@@ -182,7 +167,8 @@ public class Arquivos {
 			for(Pedidos p : pedidos) {			
 				p.gravaPedido(b);
 			}
-			b.close();			
+			b.close();
+			f.close();
 		}catch(IOException e) {
 			System.out.println("Erro ao salvar o arquivo.");
 	}
@@ -195,11 +181,11 @@ public class Arquivos {
 			BufferedWriter b = new BufferedWriter(f);
 			
 			b.write(lanches.size() + "\n");
-			for(Lanche l: lanches) {
-				
+			for(Lanche l: lanches) {				
 				l.gravaLanche(b);
 			}
 			b.close();
+			f.close();
 			
 		}catch(IOException e) {
 			System.out.println("Erro ao salvar o arquivo.");

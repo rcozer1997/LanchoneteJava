@@ -8,22 +8,27 @@ public class Lanche {
 	int codigo;
 	String descricao;
 	float preco;
-	String nomeLanchonete;
+	int codLanchonete;
 	int qntVendas = 0;
 	
-	public Lanche(int codigo, String descricao, float preco, String nomeLanchonete) {
+
+	public String toString() {
+		return "Codigo do lanche:" + codigo + ", Descricao:" + descricao + ", Valor Unitario:" + preco + ", Cod. da Lanchonete:" + codLanchonete;
+	}
+	
+	public Lanche(int codigo, String descricao, float preco, int codLanchonete) {
 		super();
 		this.codigo = codigo;
 		this.descricao = descricao;
 		this.preco = preco;
-		this.nomeLanchonete = nomeLanchonete;
+		this.codLanchonete = codLanchonete;
 }
 	
 	public Lanche(ArrayList<String> list) {	
 		this.codigo = Integer.parseInt(list.get(0));
 		this.descricao = list.get(1);
 		this.preco = Float.parseFloat(list.get(2));
-		this.nomeLanchonete = list.get(3);
+		this.codLanchonete = Integer.parseInt(list.get(3));
 		this.qntVendas = Integer.parseInt(list.get(4));
 }
 	
@@ -31,7 +36,7 @@ public class Lanche {
 		b.write(this.codigo + "\n");
 		b.write(this.descricao + "\n");
 		b.write(this.preco + "\n");
-		b.write(this.nomeLanchonete + "\n");
+		b.write(this.codLanchonete + "\n");
 		b.write(this.qntVendas + "\n");
 	}
 
@@ -51,20 +56,16 @@ public class Lanche {
 		return preco;
 	}
 	
-	public String getNomeLanchonete() {
-		return nomeLanchonete;
+	public int getCodLanchonete() {
+		return codLanchonete;
 	}
-	
+
 	public void atualizaqntVendas(int quant) {
 		this.qntVendas += quant;
 	}
 	
 	public int getQntVendas() {
 		return this.qntVendas;
-	}
-	
-	public String toString() {
-		return "Lanche [codigo=" + codigo + ", descricao=" + descricao + ", preco=" + preco + "]";
 	}
 	
 	public int comparaPreco(Lanche l) {

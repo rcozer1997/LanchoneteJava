@@ -14,6 +14,8 @@ import foodApp.Compara.ComparaLanchesVendidos;
 import foodApp.Compara.ComparaLanchonetePrecoMedio;
 import foodApp.Compara.ComparaLanchoneteVendas;
 import foodApp.Lanchonetes.Lanche;
+import foodApp.Lanchonetes.Lanchonete;
+import foodApp.Lanchonetes.Pedidos;
 
 public class Administrador extends Usuario {
 	Scanner s = new Scanner (System.in);
@@ -35,7 +37,7 @@ public class Administrador extends Usuario {
 		System.out.println("------------------------------------------------");
 		System.out.println("1) Relatorio geral");
 		System.out.println("2) Relatorio de vendas");
-		System.out.println("3) Relatorio de desempenho - nao funciona");
+		System.out.println("3) Relatorio de desempenho");
 		System.out.println("4) Remover cadastro");
 		System.out.println("0) Sair");
 		
@@ -46,6 +48,9 @@ public class Administrador extends Usuario {
 			break;
 		case 2:
 			relatorioVendas();
+			break;
+		case 3:
+			relatorioDesempenho();
 			break;
 		case 4:
 			removerCadastro(this.getEmail(), sistema.getListaUsuarios());
@@ -82,18 +87,52 @@ public class Administrador extends Usuario {
 	}
 	
 	public void relatorioVendas() {
+		System.out.println("------------------------------------LANCHES MAIS VENDIDOS---------------------------------------");
 		lanchesMaisVendidos();
-		System.out.println("");
+		System.out.println();
+		System.out.println("---------------------------------LANCHES DE MAIOR FATURAMENTO-----------------------------------");
 		lanchesMaiorFaturamento();
-		System.out.println("");
+		System.out.println();
+		System.out.println("------------------------------------LOJAS COM MAIS VENDAS---------------------------------------");
 		lojasMaisVendas();
-		System.out.println("");
+		System.out.println();
+		System.out.println("----------------------------------LOJAS COM MAIOR FATURAMENTO-----------------------------------");
 		lojasMaiorFaturamento();	
-		System.out.println("");
+		System.out.println();
+		System.out.println("----------------------------------CLIENTES QUE MAIS COMPRARAM-----------------------------------");
 		clientesMaisCompras();
-		System.out.println("");
+		System.out.println();
+		System.out.println("----------------------------------CLIENTES QUE MAIS GASTARAM------------------------------------");
 		clientesMaiorGasto();
+		System.out.println();
+
 	}
+	
+	public void relatorioDesempenho() {
+		  for(Lanchonete l : sistema.getTodasLanchonetes()){
+	            double qtdProdutos = 0;
+	            double qtdPedidos = 0;
+	            for(Pedidos pedido : l.getListaPedidos()){
+	                qtdProdutos += pedido.getProdutos().size();
+	                	if(pedido.getProdutos().size() == 0) qtdProdutos = 0;
+	                qtdPedidos += pedido.getValorTotal();
+	                	if(pedido.getValorTotal() == 0) qtdPedidos = 0;
+	            }
+	            System.out.println("Lanchonete: " + l.getNome());
+	            if(qtdPedidos != 0 && qtdPedidos != 0)
+	            System.out.println("Valor medio por produtos: " + qtdPedidos / qtdProdutos);
+	            else System.out.println("Valor medio por produtos: 0.0");
+	            
+        		if(qtdProdutos != 0) 
+    	            qtdProdutos /= l.getListaPedidos().size();	
+        		if(qtdPedidos != 0)
+    	            qtdPedidos /= l.getListaPedidos().size();
+        		
+        		System.out.println("Media de produtos por pedido: " + qtdProdutos);
+	            System.out.println("Media de valor por pedido: " + qtdPedidos + '\n');
+	            
+	        }
+       }
 	
 	void lanchesMaisVendidos() {
 		ComparaLanchesVendidos c = new ComparaLanchesVendidos();
@@ -134,25 +173,54 @@ public class Administrador extends Usuario {
 	}
 	
 	void exibeLanches() {
+		System.out.println("-----------------------------------------------------------------------------------------------------");
+		System.out.printf("%15s%20s%15s%15s%20s", "CODIGO", "NOME", "PRECO", "VENDIDOS", "COD. LANCHONETE");
+		System.out.println();
+		System.out.println("-----------------------------------------------------------------------------------------------------");
 		if(sistema.getTodosLanches().size() >= 5) {
 			for(int i = 0; i < 5; i++) {
-				System.out.println(sistema.getTodosLanches().get(i));
+				Lanche l = sistema.getTodosLanches().get(i);
+				System.out.println("-----------------------------------------------------------------------------------------------------");
+				System.out.format("%15s%20s%15s%15s%20s",l.getCodigo(), l.getNome(), l.getPreco(), l.getQntVendas(), l.getCodLanchonete());
+				System.out.println();
+				System.out.println("-------------------------------------------------------------------------------------------------");
 			}		
 		}
-		else System.out.println(sistema.getTodosLanches());	
+		else {
+			for(Lanche l : sistema.getTodosLanches()) {
+				System.out.println("-----------------------------------------------------------------------------------------------------");
+				System.out.format("%15s%20s%15s%15s%20s",l.getCodigo(), l.getNome(), l.getPreco(), l.getQntVendas(), l.getCodLanchonete());
+				System.out.println();
+				System.out.println("-------------------------------------------------------------------------------------------------");
+			}
+		}
 	}
 	
 	void exibeLanchonetes() {
+		System.out.println("-----------------------------------------------------------------------------------------------------");
+		System.out.printf("%15s%20s%15s%15s%15s%25s", "CODIGO", "NOME", "PROPRIETARIO", "ENDERECO", "VENDAS", "FATURAMENTO MEDIO");
+		System.out.println();
+		System.out.println("-----------------------------------------------------------------------------------------------------");
 		if(sistema.getTodasLanchonetes().size() >=5) {
 			for(int i = 0; i < 5; i++) {
-				System.out.println(sistema.getTodasLanchonetes().get(i));
+				Lanchonete l = sistema.getTodasLanchonetes().get(i);
+				System.out.println("-----------------------------------------------------------------------------------------------------");
+				System.out.format("%15s%20s%15s%15s%15s%15s",l.getCodigo(), l.getNome(), l.getProprietarioNome(), l.getEndereco(), l.getListaPedidos().size(), l.getPrecoMedio());
+				System.out.println();
+				System.out.println("-------------------------------------------------------------------------------------------------");
 			}	
 		}
-		else System.out.println(sistema.getTodasLanchonetes());
-		
+		else {
+			for(Lanchonete l : sistema.getTodasLanchonetes()) {
+				System.out.println("-----------------------------------------------------------------------------------------------------");
+				System.out.format("%15s%20s%15s%15s%15s%15s",l.getCodigo(), l.getNome(), l.getProprietarioNome(),l.getEndereco(), l.getListaPedidos().size(), l.getPrecoMedio());
+				System.out.println();
+				System.out.println("-------------------------------------------------------------------------------------------------");
+			}
+		}	
 	}
 	
-	ArrayList<Cliente> getClientes(){
+	ArrayList<Cliente> getClientes(){   //Metodo a ser reaproveitado para que clientes possam ser filtrados na lista de usuarios
 		ArrayList<Cliente> clientes = new ArrayList<>();
 		for(Usuario u : sistema.getListaUsuarios()) {
 			if(u.getIdent() == 3) {
@@ -163,17 +231,29 @@ public class Administrador extends Usuario {
 	}
 	
 	void exibeClientes() {
-		ArrayList<Cliente> clientes = new ArrayList<>();
-		for(Usuario c : sistema.getListaUsuarios()) {
-			if(c.getIdent() == 3) {
-				clientes.add((Cliente) c);
-			}		
-		}		
+		ArrayList<Cliente> clientes = getClientes();
+					
+		System.out.println("-----------------------------------------------------------------------------------------------------");
+		System.out.printf("%15s%20s%15s", "NOME CLIENTE", "QNTD. COMPRAS", "GASTO TOTAL");
+		System.out.println();
+		System.out.println("-----------------------------------------------------------------------------------------------------");
+		
 		if(clientes.size() >= 5) {
 			for(int i = 0; i < 5; i++) {
-				System.out.println(clientes.get(i));
+				Cliente c = clientes.get(i);
+				System.out.println("----------------------------------------------------------------------------------------------");
+				System.out.format("%12s%15s%18s",c.getNome(), c.getQtdCompras(), c.gastoTotal());
+				System.out.println();
+				System.out.println("----------------------------------------------------------------------------------------------");
 			}	
 		}
-		else System.out.println(clientes);				
+		else {
+			for(Cliente c : clientes) {
+				System.out.println("----------------------------------------------------------------------------------------------");
+				System.out.format("%12s%15s%18s",c.getNome(), c.getQtdCompras(), c.gastoTotal());
+				System.out.println();
+				System.out.println("----------------------------------------------------------------------------------------------");
+			}
+		}				
 	}
 }

@@ -12,7 +12,7 @@ import foodApp.Lanchonetes.Lanchonete;
 import foodApp.Lanchonetes.Pedidos;
 
 public class Proprietario extends Usuario {
-	ArrayList<Lanchonete> lanchonetes = new ArrayList <>();
+	private ArrayList<Lanchonete> lanchonetes = new ArrayList <>();
 	Arquivos arq = new Arquivos();
 	Scanner s = new Scanner(System.in);
 	
@@ -36,7 +36,7 @@ public class Proprietario extends Usuario {
 		System.out.println("2) Remover Lanchonete");
 		System.out.println("3) Cadastrar Lanche");
 		System.out.println("4) Visualizar lista de pedidos de uma lanchonete");
-		System.out.println("5) Visualizar um pedido de uma lanchonete - nao funciona");
+		System.out.println("5) Visualizar um pedido de uma lanchonete");
 		System.out.println("6) Remover pedido");
 		System.out.println("7) Remover cadastro");
 		System.out.println("0) Sair");
@@ -60,14 +60,11 @@ public class Proprietario extends Usuario {
 			arq.salvaLanchesArq(sistema.getTodosLanches());
 			break;
 		case 4:
-			try {
-			visualizarPedidosLanchonete();
-			}catch(CodigoNaoEncontradoException e) {
-				System.out.println(e.getMessage());
-			}
+			visualizarPedidosLanchonete();		
 			break;
-		/*case 5:
-			break;*/
+		case 5:
+			visualizarPedidoEspecifico();
+			break;
 		case 6:
 			try {
 			removePedido();
@@ -106,9 +103,9 @@ public class Proprietario extends Usuario {
 		if(codigo == 0) {
 			System.out.println("Zero nao eh um codigo valido!");
 		}
-		if(sistema.verificaExistenciaLanchonete(codigo)) {
+		if(sistema.verificaExistenciaLanchonete(codigo) && codigo != 0) {
 			//verifica existencia da lanchonete na lista onde tem todas as lanchonetes do sistema
-			Lanchonete l = new Lanchonete(codigo,nome,endereco,categoria, this.getNome(), this.getEmail());			
+			Lanchonete l = new Lanchonete(codigo,nome,endereco,categoria, this.getNome(), this.getEmail(), this.sistema);			
 			lanchonetes.add(l); //adiciona lanchonete no arraylist do proprietario
 			sistema.getTodasLanchonetes().add(l); //adiciona na lista, em Sistema, de todas as lanchonetes
 		}
@@ -128,8 +125,9 @@ public class Proprietario extends Usuario {
 			l.removeTodosLanches();
 			l.removeTodosPedidos();
 			sistema.getTodasLanchonetes().remove(l);
+			this.lanchonetes.remove(l);
 			}
-		arq.salvaLanchoneteArq(sistema.getTodasLanchonetes());
+		//arq.salvaLanchoneteArq(sistema.getTodasLanchonetes());
 		arq.salvaLanchesArq(sistema.getTodosLanches());
 		arq.salvaPedidosArq(sistema.getTodosPedidos());
 	}
@@ -166,7 +164,7 @@ public class Proprietario extends Usuario {
 		for(Lanchonete l : lanchonetes) {
 			if(l.getProprietarioNome().equals(this.nome)) {
 				System.out.println("---------------------------------------------------------------------------------------------");
-			System.out.format("%15s%20s%15s%15s%15s",l.codigo, l.nome, l.endereco, l.categoria, l.pontos);
+			System.out.format("%15s%20s%15s%15s%15s",l.getCodigo(), l.getNome(), l.getEndereco(), l.getCategoria(), l.getPontos());
 			System.out.println();
 			System.out.println("--------------------------------------------------------------------------------------------------");
 			}
@@ -186,35 +184,54 @@ public class Proprietario extends Usuario {
 			}
 			else if(verificaProprietario(l)) {
 				try {
-					l.cadastraLanche(l);
+					l.cadastraLanche();
 				}catch(CodigoReplicadoException e) {
 					System.out.println(e.getMessage());
 			}
 		}
-
 	}
-
 }
 	
 	public Lanchonete buscarLanchonete(int codigo) {
 		for(Lanchonete l : sistema.getTodasLanchonetes())
-			if(l.codigo == codigo) {
+			if(l.getCodigo() == codigo) {
 				return l;
 			}
 		return null;
 	}
 	
-	public void visualizarPedidosLanchonete() throws CodigoNaoEncontradoException{
+	public void visualizarPedidosLanchonete() {
+		try {
+			Lanchonete l = retornaLanchoneteParaVerPedidos();
+			if(verificaProprietario(l)) {
+				l.visualizarPedidos();
+			}
+		}catch(CodigoNaoEncontradoException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	private void visualizarPedidoEspecifico() {
+		try {
+			Lanchonete l = retornaLanchoneteParaVerPedidos();
+			if(verificaProprietario(l)) {
+				l.visualizarPedidoEspecifico();
+			}
+		}catch(CodigoNaoEncontradoException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	private Lanchonete retornaLanchoneteParaVerPedidos() throws CodigoNaoEncontradoException {
 		listaLanchonetesProprietario();
 		int codigo = s.nextInt();
 		Lanchonete l = buscarLanchonete(codigo);
 		if(l == null) {
 			throw new CodigoNaoEncontradoException("Codigo invalido!");
 		}
-		else if(verificaProprietario(l)) {
-			l.visualizarPedidos();
-		}
+		else return l;
 	}
+	
 	
 	public void removePedido() throws CodigoNaoEncontradoException{
 		listaLanchonetesProprietario();
@@ -232,8 +249,9 @@ public class Proprietario extends Usuario {
 				throw new CodigoNaoEncontradoException("Codigo invalido!");
 			}
 			else {
+				sistema.getTodosPedidos().remove(p);
 				l.removePedido(p);
-				//sistema.getTodosPedidos().remove(p);
+				//arq.salvaPedidosArq(sistema.getTodosPedidos());
 			}
 		}
 	}

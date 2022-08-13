@@ -9,10 +9,10 @@ import foodApp.Arquivos;
 import foodApp.Sistema;
 
 public abstract class Usuario {
-	String nome;
-	private String email;
-	private String senha;
-	int ident; // 1 - Administrador , 2 - Proprietario , 3 - Cliente	
+	protected String nome;
+	protected String email;
+	protected String senha;
+	protected int ident; // 1 - Administrador , 2 - Proprietario , 3 - Cliente	
 	public Sistema sistema;
 	Arquivos arq = new Arquivos();
 	Scanner s = new Scanner(System.in);
